@@ -37,6 +37,18 @@ public class MainActivity extends Activity {
                 builder.setContentTitle("ContentTitle");
             }
         });
+        addProperty("ContentText", true, new CheckBoxListener() {
+            @Override
+            public void run(Notification.Builder builder) {
+                builder.setContentText("ContentText");
+            }
+        });
+        addProperty("SubText", false, new CheckBoxListener() {
+            @Override
+            public void run(Notification.Builder builder) {
+                builder.setSubText("SubText");
+            }
+        });
         addButton("send");
     }
 
