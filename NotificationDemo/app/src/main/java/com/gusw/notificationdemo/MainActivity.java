@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,6 +52,42 @@ public class MainActivity extends Activity {
                 builder.setSubText("SubText");
             }
         });
+        addProperty("LargeIcon", false, new CheckBoxListener() {
+            @Override
+            public void run(Notification.Builder builder) {
+                Bitmap large = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+                builder.setLargeIcon(large);
+            }
+        });
+        addProperty("Progress", false, new CheckBoxListener() {
+            @Override
+            public void run(Notification.Builder builder) {
+                builder.setProgress(100, 70, true);
+            }
+        });
+
+        if (Build.VERSION.SDK_INT >= 17) {
+            addProperty("ShowWhen", false, new CheckBoxListener() {
+                @Override
+                public void run(Notification.Builder builder) {
+                    builder.setShowWhen(true);
+                }
+            });
+        }
+
+        addProperty("UsesChronometer", false, new CheckBoxListener() {
+            @Override
+            public void run(Notification.Builder builder) {
+                builder.setUsesChronometer(true);
+            }
+        });
+        addProperty("Ticker", false, new CheckBoxListener() {
+            @Override
+            public void run(Notification.Builder builder) {
+                builder.setTicker("Ticker");
+            }
+        });
+
         addButton("send");
     }
 
