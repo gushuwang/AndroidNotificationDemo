@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <CheckBox
+        android:id="@+id/progress_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Progress"/>
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="25dp">
+
+        <RadioButton
+            android:id="@+id/progress_indeterminate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="indeterminate"/>
+
+        <RadioButton
+            android:id="@+id/progress_not_indeterminate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="not indeterminate"/>
+    </RadioGroup>
+</LinearLayout>

@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.RadioButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class MainActivity extends Activity {
     private NotificationManager mNm;
     private int mId = 1;
 
-    private List<CheckBox> mProperties = new ArrayList<>();
+    private List<CheckBox> mCheckboxProperties = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,40 +35,33 @@ public class MainActivity extends Activity {
         mButtonContainer = (ViewGroup) findViewById(R.id.button_container);
         mNm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        addProperty("ContentTitle", true, new CheckBoxListener() {
+        addCheckboxProperty("ContentTitle", true, new CheckBoxListener() {
             @Override
             public void run(Notification.Builder builder) {
                 builder.setContentTitle("ContentTitle");
             }
         });
-        addProperty("ContentText", true, new CheckBoxListener() {
+        addCheckboxProperty("ContentText", true, new CheckBoxListener() {
             @Override
             public void run(Notification.Builder builder) {
                 builder.setContentText("ContentText");
             }
         });
-        addProperty("SubText", false, new CheckBoxListener() {
+        addCheckboxProperty("SubText", false, new CheckBoxListener() {
             @Override
             public void run(Notification.Builder builder) {
                 builder.setSubText("SubText");
             }
         });
-        addProperty("LargeIcon", false, new CheckBoxListener() {
+        addCheckboxProperty("LargeIcon", false, new CheckBoxListener() {
             @Override
             public void run(Notification.Builder builder) {
                 Bitmap large = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
                 builder.setLargeIcon(large);
             }
         });
-        addProperty("Progress", false, new CheckBoxListener() {
-            @Override
-            public void run(Notification.Builder builder) {
-                builder.setProgress(100, 70, true);
-            }
-        });
-
         if (Build.VERSION.SDK_INT >= 17) {
-            addProperty("ShowWhen", false, new CheckBoxListener() {
+            addCheckboxProperty("ShowWhen", false, new CheckBoxListener() {
                 @Override
                 public void run(Notification.Builder builder) {
                     builder.setShowWhen(true);
@@ -75,18 +69,19 @@ public class MainActivity extends Activity {
             });
         }
 
-        addProperty("UsesChronometer", false, new CheckBoxListener() {
+        addCheckboxProperty("UsesChronometer", false, new CheckBoxListener() {
             @Override
             public void run(Notification.Builder builder) {
                 builder.setUsesChronometer(true);
             }
         });
-        addProperty("Ticker", false, new CheckBoxListener() {
+        addCheckboxProperty("Ticker", false, new CheckBoxListener() {
             @Override
             public void run(Notification.Builder builder) {
                 builder.setTicker("Ticker");
             }
         });
+        addProgressProperty("Progress", false, true);
 
         addButton("send");
     }
@@ -100,7 +95,7 @@ public class MainActivity extends Activity {
             public void onClick(View view) {
                 Notification.Builder builder = new Notification.Builder(MainActivity.this);
                 builder.setSmallIcon(R.mipmap.ic_launcher);
-                for (CheckBox checkBox : mProperties) {
+                for (CheckBox checkBox : mCheckboxProperties) {
                     if (checkBox.isChecked()) {
                         Object tag = checkBox.getTag();
                         if (tag != null && tag instanceof CheckBoxListener) {
@@ -114,14 +109,33 @@ public class MainActivity extends Activity {
         mButtonContainer.addView(btn);
     }
 
-    private void addProperty(CharSequence text, boolean checked, CheckBoxListener listener) {
+    private void addCheckboxProperty(CharSequence text, boolean checked, CheckBoxListener listener) {
         CheckBox checkbox = (CheckBox) LayoutInflater.from(this)
                 .inflate(R.layout.checkbox, mButtonContainer, false);
         checkbox.setText(text);
         checkbox.setChecked(checked);
         checkbox.setTag(listener);
-        mProperties.add(checkbox);
+        mCheckboxProperties.add(checkbox);
         mButtonContainer.addView(checkbox);
+    }
+
+    private void addProgressProperty(CharSequence text, boolean checked, boolean indeterminate) {
+        View container = LayoutInflater.from(this).inflate(R.layout.progress, mButtonContainer, false);
+        CheckBox progress = (CheckBox) container.findViewById(R.id.progress_checkbox);
+        final RadioButton indeterminateBtn = (RadioButton) container.findViewById(R.id.progress_indeterminate);
+
+        progress.setChecked(checked);
+        indeterminateBtn.setChecked(indeterminate);
+
+        progress.setTag(new CheckBoxListener() {
+            @Override
+            public void run(Notification.Builder builder) {
+                builder.setProgress(100, 70, indeterminateBtn.isChecked());
+            }
+        });
+
+        mCheckboxProperties.add(progress);
+        mButtonContainer.addView(container);
     }
 
     private int nextId() {
